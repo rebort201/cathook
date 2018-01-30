@@ -553,6 +553,29 @@ void DoWalking()
                 g_pUserCmd->buttons |= IN_DUCK;
             }
         }
+		
+		static int ticks_last_jump = 0;
+		
+		// Check if target is jumping?
+        if (CE_INT(found_entity, netvar.iFlags) & (1 << 0))
+        {
+
+            //If jump is not pressed then press it
+            if (!g_pUserCmd->buttons & IN_JUMP)
+            {
+                g_pUserCmd->buttons |= IN_JUMP;
+            }
+			// If the ticks since last jump are greater or equal to 9, then force
+			// the player to stop jumping The bot disables jump untill player hits
+			// the ground or the target stops jumping
+			if (ticks_last_jump++ >= 9)
+			{
+				g_pUserCmd->buttons = g_pUserCmd->buttons & ~IN_JUMP;
+			}
+			// If the players jump cmd has been used, then we reset our var
+		}
+			if (!g_pUserCmd->buttons & IN_JUMP)
+			ticks_last_jump = 0;
     }
 }
 
